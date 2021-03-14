@@ -1,15 +1,6 @@
-# craftbot
-A Minecraft control bot for Discord, written in Python
+# Docker Image Build Steps
 
-## Development Setup
-
-The following tools are needed:
-
-1. Docker
-2. Python
-3. Code editor (I'm using Visual Studio Code)
-
-### Load a development server in Docker
+### Building a development server in Docker
 
 Get the development server up and running:
 
@@ -23,8 +14,8 @@ Upon login update the server, and install necessary tools:
 
 ```bash
 
-> apt-get update && apt-get upgrade
-> apt-get install wget screen rsync zip jq cron openjdk-8-jdk-headless
+apt-get update && apt-get upgrade
+apt-get install wget screen rsync zip jq cron openjdk-8-jdk-headless
 
 ```
 
@@ -50,3 +41,29 @@ msm jargroup create minecraft minecraft
 
 ```
 
+Finally, get the latest version of Python installed:
+
+```bash
+
+wget https://www.python.org/ftp/python/3.9.2/Python-3.9.2.tgz
+
+apt-get install -y make build-essential libssl-dev zlib1g-dev \
+       libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+       libncurses5-dev libncursesw5-dev xz-utils tk-dev
+
+tar xvf Python-3.9.2.tgz
+cd Python-3.9.2
+./configure --enable-optimizations --with-ensurepip=install
+
+make -j 8
+
+make altinstall
+```
+
+The container is ready to be converted to an image and pushed to Docker Hub.
+
+```bash
+
+docker commit -m "Minecraft Server" -a <container_id> thehatchcloud/minecraft:<version>
+
+```
