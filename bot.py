@@ -1,22 +1,25 @@
+from discord.ext import commands
+from dotenv import load_dotenv
+from msm.server import *
 import os
 
-import discord
-from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
 
-client = discord.Client()
+# 2
+bot = commands.Bot(command_prefix='!')
 
-@client.event
+@bot.event
 async def on_ready():
-    guild = discord.utils.get(client.guilds, name=GUILD)
-    print(
-        f'{client.user} is connected to the following guild:\n'
-        f'{guild.name}(id: {guild.id})'
-    )
+    print(f'{bot.user.name} has connected to Discord!')
 
-client.run(TOKEN)
 
-# TODO: https://realpython.com/how-to-make-a-discord-bot-python/#responding-to-events
+@bot.command(name='server', help='Run some server commands')
+async def server(ctx, command):
+    if command == 'list':        
+        await ctx.send(server_list())
+        
+
+
+bot.run(TOKEN)
