@@ -20,4 +20,5 @@ extensions = [
 for extension in extensions:
     bot.load_extension(extension)
 
+
 bot.run(TOKEN)
