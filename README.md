@@ -7,7 +7,7 @@ A Minecraft control bot for Discord, written in Python
 
 --Setup Commands------------------------------------------------
   ++server list                                   List servers
-  +oserver create <name>                          Creates a new Minecraft server
+  o+server create <name>                          Creates a new Minecraft server
   ++server delete <name>                          Deletes an existing Minecraft server
   ++server rename <name> <new-name>               Renames an existing Minecraft server
 

@@ -3,48 +3,45 @@ import subprocess
 
 
 class ServerCommands(commands.Cog):
-    """Commands to execute MSM's 'server' subcommands."""
+    """Commands to execute MSM's 'server' commands."""
 
     def __init__(self, bot):
         self.bot = bot
-
+    
     @commands.group(name='server', invoke_without_command=True,
             help=' - Commands to manage servers on the Minecraft host')
     async def server(self, ctx):
         await ctx.send('For a list of server commands, run: ```!help server```')
-
-
-    @server.command(name='list', help=' - List all servers on the Minecraft host')
-    async def list_server(self, ctx):
-        server_list = subprocess.run(
-            ['msm', 'server', 'list'], capture_output=True).stdout.decode('utf-8')
-        await ctx.send(server_list)
-
-
-    @server.command(name='create', help=' - Create a new server on the Minecraft host')
-    async def create_server(self, ctx, name: str):
-        try:
-            await ctx.send('Creating your new Minecraft server, standby...')
-            result = subprocess.run(['msm', 'server', 'create', name], check=True)
-            # TODO: Add steps to create the eula.txt file and update server.properties
-            await ctx.send(f'Your new server named "{name}" is now ready.')
-        except subprocess.CalledProcessError as e:
-            await ctx.send(f'Uh-oh... {e}')
-
-
-    @server.command(name='delete', help=' - Deletes a server on the Minecraft host')
-    async def delete_server(self, ctx, name: str):
-        await ctx.send(f'Deleting your the "{name}"" server on the Minecraft host. Standby...')
-        result = subprocess.run(['msm', 'server', 'delete', name], input=b'y')
-        await ctx.send(f'"{name}" server has been deleted from the Minecraft host (backups are ' \
-                         + 'preserved).')
     
-    @server.command(name='rename', help=' - Renames a server on the Minecraft host')
-    async def rename_server(self, ctx, current_name: str, new_name: str):
-        response = subprocess.check_output(
-            ['msm', 'server', 'rename', current_name, new_name]
-            ).decode('utf-8')
-        await ctx.send(response)
+    @server.command(name='start', help=' - Starts the named server')
+    async def start_server(self, ctx, server_name: str):
+        await ctx.send(f'Starting {server_name}. Standby...')
+        result = subprocess.run(['msm', server_name, 'start'], check=True)
+        print(result)
+        await ctx.send(f'Startup process for {server_name} complete. Have fun!')
+    
+    @server.command(name='stop', help=' - Stops the named server')
+    async def stop_server(self, ctx, server_name: str, now=None):
+        if now:
+            await ctx.send(f'Stopping {server_name} IMMEDIATELY. Standby...')
+            result = subprocess.run(['msm', server_name, 'stop', 'now'], check=None)
+        else:
+            await ctx.send(f'Stopping {server_name}. Standby...')
+            result =subprocess.run(['msm', server_name, 'stop'], check=True)
+        
+        await ctx.send(f'{server_name} is stopped.')
+    
+    @server.command(name='restart', help=' - Restarts the named server')
+    async def restert_server(self, ctx, server_name: str, now=None):
+        if now:
+            await ctx.send(f'Restarting {server_name} IMMDEDIATELY. Standby...')
+            result = subprocess.run(['msm', server_name, 'restart', 'now'], check=True)
+        else:
+            await ctx.send(f'Restarting {server_name}. Standby...')
+            result = subprocess.run(['msm', server_name, 'restart'], check=True)
+        
+        await ctx.send(f'{server_name} has been restarted.')
+
 
 
 def setup(bot):

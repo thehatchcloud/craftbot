@@ -1,4 +1,3 @@
-import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 import os
@@ -14,6 +13,7 @@ async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
 
 extensions = [
+    'msm.HostCommands',
     'msm.ServerCommands',
 ]
 

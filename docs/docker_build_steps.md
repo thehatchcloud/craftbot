@@ -57,7 +57,7 @@ cd Python-3.9.2
 
 make -j 8
 
-make altinstall
+make
 ```
 
 The container is ready to be converted to an image and pushed to Docker Hub.
