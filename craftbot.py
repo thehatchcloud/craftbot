@@ -15,6 +15,7 @@ async def on_ready():
 extensions = [
     'msm.HostCommands',
     'msm.ServerCommands',
+    'msm.JarGroupCommands',
 ]
 
 for extension in extensions:

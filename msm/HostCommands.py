@@ -29,15 +29,19 @@ class HostCommands(commands.Cog):
 
 
     @host.command(name='create', help=' - Create a new server on the Minecraft host')
-    async def create_server(self, ctx, name: str):
+    async def create_server(self, ctx, name: str, jargroup: str):
         """Create a new Minecraft server on the host"""
 
         try:
             await ctx.send('Creating your new Minecraft server, standby...')
             result = subprocess.run(['msm', 'server', 'create', name], check=True)
-            self.agree_to_eula(msm_config.settings['SERVER_STORAGE_PATH'], name)
             # TODO: Add the step to change the jargroup to spigot server
-            # TODO: Create the default server property file
+            self.agree_to_eula(msm_config.settings['SERVER_STORAGE_PATH'], name)
+            self.create_default_server_settings_file(
+                msm_config.settings['SERVER_STORAGE_PATH'],
+                name,
+                '1.16.5'
+            )
             await ctx.send(f'Your new server named "{name}" is now ready.')
         except subprocess.CalledProcessError as e:
             await ctx.send(f'Uh-oh... {e}')
@@ -74,15 +78,15 @@ class HostCommands(commands.Cog):
         """Create the default server.properties file with the server version included"""
         
         default_properties = msm_config.default_server_properties
-        default_properties['msm-version'] = version_number
+        default_properties['msm-version'] = f'minecraft/{version_number}'
         default_properties['motd'] = f'Autism Up - {server_name} session'
         timestamp = subprocess.run(['date'], capture_output=True).stdout.decode('utf-8').rstrip()
 
         with (open(f'{msm_server_directory}/{server_name}/server.properties', 'w')) as properties:
-            properties.write('#Minecraft server properties')
-            properties.write(f'#{timestamp}')
+            properties.write('#Minecraft server properties\n')
+            properties.write(f'#{timestamp}\n')
             for key, value in default_properties.items():
-                properties.write(f'{property[key]}={property[item]}')
+                properties.write(f'{key}={value}')
 
 
 def setup(bot):

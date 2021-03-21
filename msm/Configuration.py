@@ -11,7 +11,7 @@ class Configuration(object):
                     continue
                 
                 setting = line.split('=')
-                self.settings[setting[0]] = setting[1].rstrip()
+                self.settings[setting[0]] = setting[1].rstrip().replace('"', '')
         
         self.default_server_properties = {
             'spawn-protection': '16',
