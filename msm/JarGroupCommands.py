@@ -23,7 +23,12 @@ class JarGroupCommands(commands.Cog):
         """List available JarGroups on the host"""
 
         results = subprocess.run(['msm', 'jargroup', 'list'], capture_output=True).stdout.decode('utf-8')
-        await ctx.send(results)
+        results = results.rstrip().split('\n')
+        results = [x for x in results if not x.startswith(' ')]
+        results.sort()
+        results = '\n'.join(results)
+        response = f'The following Minecraft versions are available on this host:\n\n```\n{results}\n```'
+        await ctx.send(response)
 
 def setup(bot):
     bot.add_cog(JarGroupCommands(bot))

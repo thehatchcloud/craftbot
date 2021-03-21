@@ -18,7 +18,6 @@ class HostCommands(commands.Cog):
 
         await ctx.send('For a list of server commands, run: ```!help host```')
 
-
     @host.command(name='list', help=' - List all servers on the Minecraft host')
     async def list_server(self, ctx):
         """List all Minecraft servers on the host."""
@@ -27,25 +26,24 @@ class HostCommands(commands.Cog):
             ['msm', 'server', 'list'], capture_output=True).stdout.decode('utf-8')
         await ctx.send(server_list)
 
-
     @host.command(name='create', help=' - Create a new server on the Minecraft host')
-    async def create_server(self, ctx, name: str, jargroup: str):
+    async def create_server(self, ctx, name: str, version: str):
         """Create a new Minecraft server on the host"""
 
         try:
             await ctx.send('Creating your new Minecraft server, standby...')
             result = subprocess.run(['msm', 'server', 'create', name], check=True)
-            # TODO: Add the step to change the jargroup to spigot server
+            jargroup = self.convert_version_to_jargroup_name(version)
+            subprocess.run(['msm', name, 'jar', jargroup])
             self.agree_to_eula(msm_config.settings['SERVER_STORAGE_PATH'], name)
             self.create_default_server_settings_file(
                 msm_config.settings['SERVER_STORAGE_PATH'],
                 name,
-                '1.16.5'
+                version
             )
             await ctx.send(f'Your new server named "{name}" is now ready.')
         except subprocess.CalledProcessError as e:
             await ctx.send(f'Uh-oh... {e}')
-
 
     @host.command(name='delete', help=' - Deletes a server on the Minecraft host')
     async def delete_server(self, ctx, name: str):
@@ -86,7 +84,19 @@ class HostCommands(commands.Cog):
             properties.write('#Minecraft server properties\n')
             properties.write(f'#{timestamp}\n')
             for key, value in default_properties.items():
-                properties.write(f'{key}={value}')
+                properties.write(f'{key}={value}\n')
+
+    def convert_jargroup_name_to_version(self, jargroup_name):
+        """Convert the provided jargroup name to a Minecraft version"""
+
+        version = jargroup_name.replace('_', '.')
+        return version
+
+    def convert_version_to_jargroup_name(self, version):
+        """Convert the provided Minecraft version to a jargroup valid name"""
+
+        jargroup_name = version.replace('.', '_')
+        return jargroup_name
 
 
 def setup(bot):
