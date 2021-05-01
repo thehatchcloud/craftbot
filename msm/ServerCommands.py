@@ -1,4 +1,5 @@
 from msm.Configuration import Configuration
+from msm.CraftBotChecks import check_is_ops_channel
 from discord.ext import commands
 import subprocess
 
@@ -18,6 +19,7 @@ class ServerCommands(commands.Cog):
         await ctx.send('For a list of server commands, run: ```!help server```')
     
     @server.command(name='start', help=' - Starts the named server')
+    @commands.check(check_is_ops_channel)
     async def start_server(self, ctx, server_name: str):
         """Start a Minecraft server"""
 
@@ -27,6 +29,7 @@ class ServerCommands(commands.Cog):
         await ctx.send(f'Startup process for {server_name} complete. Have fun!')
     
     @server.command(name='stop', help=' - Stops the named server')
+    @commands.check(check_is_ops_channel)
     async def stop_server(self, ctx, server_name: str, now=None):
         """Stop a Minecraft server"""
 
@@ -40,6 +43,7 @@ class ServerCommands(commands.Cog):
         await ctx.send(f'{server_name} is stopped.')
     
     @server.command(name='restart', help=' - Restarts the named server')
+    @commands.check(check_is_ops_channel)
     async def restert_server(self, ctx, server_name: str, now=None):
         """Restart a Minecraft server"""
         

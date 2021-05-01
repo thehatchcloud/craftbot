@@ -1,4 +1,5 @@
 from msm.Configuration import Configuration
+from msm.CraftBotChecks import check_is_ops_channel
 from discord.ext import commands
 from datetime import datetime as dt
 import subprocess
@@ -19,6 +20,7 @@ class JarGroupCommands(commands.Cog):
         await ctx.send('For a list of server commands, run: ```!help jargroup```')
 
     @jargroup.command(name='list', help=' - List the available JarGroups on the host')
+    @commands.check(check_is_ops_channel)
     async def jargroup_list(self, ctx):
         """List available JarGroups on the host"""
 

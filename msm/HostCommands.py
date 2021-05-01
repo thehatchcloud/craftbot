@@ -1,4 +1,5 @@
 from msm.Configuration import Configuration
+from msm.CraftBotChecks import check_is_ops_channel
 from discord.ext import commands
 from datetime import datetime as dt
 import subprocess
@@ -19,6 +20,7 @@ class HostCommands(commands.Cog):
         await ctx.send('For a list of server commands, run: ```!help host```')
 
     @host.command(name='list', help=' - List all servers on the Minecraft host')
+    @commands.check(check_is_ops_channel)
     async def list_server(self, ctx):
         """List all Minecraft servers on the host."""
 
@@ -27,6 +29,7 @@ class HostCommands(commands.Cog):
         await ctx.send(server_list)
 
     @host.command(name='create', help=' - Create a new server on the Minecraft host')
+    @commands.check(check_is_ops_channel)
     async def create_server(self, ctx, name: str, version: str):
         """Create a new Minecraft server on the host"""
 
@@ -46,6 +49,7 @@ class HostCommands(commands.Cog):
             await ctx.send(f'Uh-oh... {e}')
 
     @host.command(name='delete', help=' - Deletes a server on the Minecraft host')
+    @commands.check(check_is_ops_channel)
     async def delete_server(self, ctx, name: str):
         """Delete a Minecraft server on the host"""
 
@@ -56,6 +60,7 @@ class HostCommands(commands.Cog):
                          + 'preserved).')
     
     @host.command(name='rename', help=' - Renames a server on the Minecraft host')
+    @commands.check(check_is_ops_channel)
     async def rename_server(self, ctx, current_name: str, new_name: str):
         """Rename a Minecraft server on the host"""
 
